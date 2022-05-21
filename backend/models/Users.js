@@ -20,4 +20,5 @@ const UserSchema=mongoose.Schema({
         default: Date.now
     }
 });
-module.exports=mongoose.model('user', UserSchema);
+const users=mongoose.model('user', UserSchema);
+module.exports=users;
