@@ -83,6 +83,8 @@ router.post('/login', [
     }
 
 });
+//Route 3: localhost/api/auth/getdata, login reguired, gets id from the JWT token and fetches data using the id in the JWT token after verifying, also a middleware function is used to get the ID in the token
+//login is reuired
 router.post("/getdata",fetchuser, async (req, res)=>{
     try {
         const userId=req.user.id;
