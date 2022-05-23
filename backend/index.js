@@ -1,7 +1,7 @@
 const connectToMongo=require('./db');
 const express = require('express')
 const app = express()
-const port = 80
+const port = 5000
 
 connectToMongo();
 //express.json() is a middleware function that deals with json formatted responses

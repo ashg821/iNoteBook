@@ -1,6 +1,12 @@
 const mongoose=require('mongoose');
+// const {Schema}=mongoose;
 
 const NotesSchema=mongoose.Schema({
+    user: {
+        //its like concept of foreign key in SQL
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    },
     title:{
         type: String,
         required: true
@@ -19,4 +25,6 @@ const NotesSchema=mongoose.Schema({
         default: Date.now
     }
 });
-module.exports=mongoose.model('notes', NotesSchema);
+const notes=mongoose.model('notes', NotesSchema);
+
+module.exports=notes;
