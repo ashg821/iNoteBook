@@ -2,67 +2,73 @@ import NoteContext from "./NoteContext";
 import { useState } from "react";
 
 const NoteState = (props) => {
-    const [state, setState] = useState([
-        {
-          "_id": "6289ddd286441e3ad4d31faa",
-          "user": "6288dc0c015808a9f764067e",
-          "title": "daily routine",
-          "description": "wae up early, study, go to sleep",
-          "tag": "routine",
-          "timeStamp": "1653202386278",
-          "__v": 0
-        },
-        {
-          "_id": "6289df7fc214140b6ba0ed71",
-          "user": "6288dc0c015808a9f764067e",
-          "title": "grocery",
-          "description": "rice, wheat, dal, rajma, maggie, begtables, maida, chana",
-          "tag": "general",
-          "timeStamp": "1653202815592",
-          "__v": 0
-        },
-        {
-          "_id": "6289ddd286441e3ad4d31faa",
-          "user": "6288dc0c015808a9f764067e",
-          "title": "daily routine",
-          "description": "wae up early, study, go to sleep",
-          "tag": "routine",
-          "timeStamp": "1653202386278",
-          "__v": 0
-        },
-        {
-          "_id": "6289df7fc214140b6ba0ed71",
-          "user": "6288dc0c015808a9f764067e",
-          "title": "grocery",
-          "description": "rice, wheat, dal, rajma, maggie, begtables, maida, chana",
-          "tag": "general",
-          "timeStamp": "1653202815592",
-          "__v": 0
-        },
-        {
-          "_id": "6289ddd286441e3ad4d31faa",
-          "user": "6288dc0c015808a9f764067e",
-          "title": "daily routine",
-          "description": "wae up early, study, go to sleep",
-          "tag": "routine",
-          "timeStamp": "1653202386278",
-          "__v": 0
-        },
-        {
-          "_id": "6289df7fc214140b6ba0ed71",
-          "user": "6288dc0c015808a9f764067e",
-          "title": "grocery",
-          "description": "rice, wheat, dal, rajma, maggie, begtables, maida, chana",
-          "tag": "general",
-          "timeStamp": "1653202815592",
-          "__v": 0
-        }
-      ]);
+  const hostName = "http://localhost:5000"
+  const [notes, setNotes] = useState([]);
+
+
+  //fetch all notes
+  const fetchNotes = async () => {
+    const response = await fetch(hostName + '/api/notes/fetchallnotes', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+      }
+    });
+    const json=await response.json();
     
-    return (
-        <NoteContext.Provider value={{state, setState}}>
-            {props.children}
-        </NoteContext.Provider>
-    )
+    setNotes(json);
+  }
+
+  //Add a note
+  const addNote = async (obj) => {
+    const response=await fetch(hostName+'/api/notes/addnote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+      },
+      body: JSON.stringify({title: obj.title, description: obj.description, tag: obj.tag})
+
+    });
+    const note=await response.json();
+    setNotes(notes.concat(note));
+  }
+
+  //Delete a note
+  const deleteNote = async (id) => {
+    await fetch(hostName+`/api/notes/deletenote/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+      }
+    });
+    setNotes(notes.filter(note => note._id !== id));
+  }
+
+  //Update a note
+  const editNote = async (id, title, description, tag) => {
+    let note;
+    const response=await fetch(hostName+`/api/notes/updatenote/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+      },
+      body: JSON.stringify({title, description, tag})
+      
+    });
+    fetchNotes();
+
+  }
+
+
+
+  return (
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, fetchNotes }}>
+      {props.children}
+    </NoteContext.Provider>
+  )
 }
 export default NoteState;
