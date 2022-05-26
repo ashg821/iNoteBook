@@ -10,7 +10,7 @@ const NoteItem = (props) => {
             <div className="card-body">
                 <div className="my-2" style={{ display: "flex", justifyContent: "space-between" }}>
                     <h5 className="card-title" style={{ display: "inline" }}>{note.title}</h5>
-                    <div style={{ display: "inline" }}>
+                    <div>
                         <i className="fa-solid fa-trash mx-2" onClick={()=>deleteNote(note._id)}></i>
                         <i className="fa-solid fa-pen-to-square mx-2" onClick={()=>updateNote(note)}></i>
                     </div>

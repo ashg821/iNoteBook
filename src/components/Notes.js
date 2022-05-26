@@ -1,19 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import noteContext from '../context/notes/NoteContext';
 import AddNote from './AddNote';
 import NoteItem from './NoteItem';
 
-function Notes() {
+function Notes(props) {
   const context = useContext(noteContext);
   const { notes, fetchNotes, editNote } = context;
   const ref = useRef(null);
   const closeRef = useRef(null);
 
-  const [note, setNote] = useState({ id: "", etitle: "", edescription: "", etag: "default" })
+  const [note, setNote] = useState({ id: "", etitle: "", edescription: "", etag: "default" });
+  let navigate=useNavigate();
 
 
   useEffect(() => {
-    fetchNotes();
+    if(localStorage.getItem('token')) fetchNotes();
+    else navigate("/login");
+
     // eslint-disable-next-line
   }, [])
 
@@ -26,6 +30,8 @@ function Notes() {
   const handleClick = (e) => {
     editNote(note.id, note.etitle, note.edescription, note.etag);
     closeRef.current.click();
+    props.showAlert("success", "Details updated successfully");
+
 
   }
   const onChange = (e) => {
@@ -34,7 +40,7 @@ function Notes() {
 
   return (
     <>
-      <AddNote />
+      <AddNote showAlert={props.showAlert} />
       <button ref={ref} style={{ display: 'none' }} type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Launch demo modal
       </button>
@@ -66,13 +72,14 @@ function Notes() {
             </div>
             <div className="modal-footer">
               <button ref={closeRef} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-primary" onClick={handleClick}>Update Note</button>
+              <button disabled={!(note.etitle.length >= 3 && note.edescription.length >= 5)} type="button" className="btn btn-primary" onClick={handleClick}>Update Note</button>
             </div>
           </div>
         </div>
       </div>
       <div className="container my-3">
         <h2 style={{ textAlign: "center" }}>Your notes</h2>
+        {notes.length === 0 && "No notes to display"}
         <div className='row container' style={{ justifyContent: "center" }}>{notes.map(note => {
           return <NoteItem note={note} key={note._id} updateNote={updateNote} />
         })}</div>

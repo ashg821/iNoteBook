@@ -12,58 +12,54 @@ const NoteState = (props) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+        'auth-token': `${localStorage.getItem('token')}`
       }
     });
-    const json=await response.json();
-    
+    const json = await response.json();
+
     setNotes(json);
   }
 
   //Add a note
   const addNote = async (obj) => {
-    const response=await fetch(hostName+'/api/notes/addnote', {
+    const response = await fetch(hostName + '/api/notes/addnote', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+        'auth-token': `${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({title: obj.title, description: obj.description, tag: obj.tag})
+      body: JSON.stringify({ title: obj.title, description: obj.description, tag: obj.tag })
 
     });
-    const note=await response.json();
+    const note = await response.json();
     setNotes(notes.concat(note));
   }
-
   //Delete a note
   const deleteNote = async (id) => {
-    await fetch(hostName+`/api/notes/deletenote/${id}`, {
+    await fetch(hostName + `/api/notes/deletenote/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+        'auth-token': `${localStorage.getItem('token')}`
       }
     });
     setNotes(notes.filter(note => note._id !== id));
-  }
+    props.showAlert("success", "Deleted note successfully");
 
+  }
   //Update a note
   const editNote = async (id, title, description, tag) => {
-    let note;
-    const response=await fetch(hostName+`/api/notes/updatenote/${id}`, {
+    await fetch(hostName + `/api/notes/updatenote/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'auth-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjI4OGRjMGMwMTU4MDhhOWY3NjQwNjdlIn0sImlhdCI6MTY1MzIwMjMxOH0.3FfJm5usiTvp-6mrvkYojyaC4Jo4oVZ7pdqCVcvpYxo'
+        'auth-token': `${localStorage.getItem('token')}`
       },
-      body: JSON.stringify({title, description, tag})
-      
+      body: JSON.stringify({ title, description, tag })
+
     });
     fetchNotes();
-
   }
-
-
 
   return (
     <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, fetchNotes }}>
